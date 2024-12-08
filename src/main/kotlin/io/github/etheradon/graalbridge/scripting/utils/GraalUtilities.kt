@@ -17,10 +17,10 @@ object GraalUtilities {
 
     var isMultiThreadedAccessAllowed: Boolean = false
 
-    val importPackagesToConvert = mutableListOf("java", "net", "com", "org", "io", "xyz")
+    val importPackagePrefixes = mutableListOf("java", "net", "com", "org", "io", "xyz")
 
     fun matchesImportPackage(impSrc: String): Boolean {
-        return importPackagesToConvert.any { impSrc.startsWith("$it.") }
+        return importPackagePrefixes.any { impSrc.startsWith("$it.") }
     }
 
     private fun loadInstrumentation() {

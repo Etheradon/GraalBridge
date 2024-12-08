@@ -4,17 +4,13 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import io.github.etheradon.graalbridge.GraalBridge
 import io.github.etheradon.graalbridge.mapping.*
-import io.github.etheradon.graalbridge.mapping.providers.*
 import io.github.etheradon.graalbridge.scripting.utils.GraalUtilities
 import io.github.etheradon.graalbridge.scripting.utils.mapping.MappingManager
 import io.github.etheradon.graalbridge.scripting.utils.mapping.Mappings
-import kotlinx.coroutines.runBlocking
 import net.minecraft.client.main.Main
 import xyz.wagyourtail.jsmacros.client.JsMacros
 import xyz.wagyourtail.jsmacros.core.library.BaseLibrary
 import xyz.wagyourtail.jsmacros.core.library.Library
-import java.io.File
-import java.io.Reader
 
 @Library("GraalBridge")
 @SuppressWarnings("unused")
@@ -37,33 +33,61 @@ class FGraal : BaseLibrary() {
 
     }
 
+    /**
+     * Sets the Minecraft version to use for loading mappings.
+     * Will most likely be automatically set when the mod is loaded.
+     */
     fun setMcVersion(version: String) {
         FGraal.setMcVersion(version)
     }
 
+    /**
+     * Sets whether multithreading is allowed for the GraalJS engine.
+     * This doesn't seem to have a noticeable effect on performance.
+     */
     fun setMultithreading(allow: Boolean) {
         GraalUtilities.isMultiThreadedAccessAllowed = allow
     }
 
-    fun addImportPackage(pkg: String) {
-        GraalUtilities.importPackagesToConvert.add(pkg)
+    /**
+     * Adds a package prefix (like net or com) to the list of packages that enhanced imports can be used on.
+     */
+    fun addImportPackagePrefix(pkg: String) {
+        GraalUtilities.importPackagePrefixes.add(pkg)
     }
 
-    fun removeImportPackage(pkg: String) {
-        GraalUtilities.importPackagesToConvert.remove(pkg)
+    /**
+     * Removes a package prefix (like net or com) from the list of packages that enhanced imports can be used on.
+     */
+    fun removeImportPackagePrefix(pkg: String) {
+        GraalUtilities.importPackagePrefixes.remove(pkg)
     }
 
+    /**
+     * Returns a namespace object for the given name.
+     * Will return a predefined instance for common mappings, otherwise a custom namespace.
+     */
     fun namespace(name: String): Namespace {
         return Namespace.fromName(name)
     }
 
+    /**
+     * Returns a list of mappings that can be used to get from one namespace to another.
+     */
     fun getMappingPath(source: Namespace, target: Namespace): List<Mapping> {
         val resolver = MappingResolver.default()
         return resolver.findShortestPath(source, target) ?: emptyList()
     }
 
+    /**
+     * Returns the current mappings that are loaded.
+     */
     fun getLoadedMappings(): Mappings = MappingManager.getMappings()
 
+    /**
+     * Detects the current namespace based on the mod loader or returns a fallback.
+     */
+    @JvmOverloads
     fun detectNamespace(fallback: String = "mojmap"): Namespace {
         val isDev = JsMacros.getModLoader().isDevEnv
         if (isDev) {
@@ -77,6 +101,10 @@ class FGraal : BaseLibrary() {
         }
     }
 
+    /**
+     * A shortcut for loading mappings from the specified namespace (like fabric, mojmap)
+     * to the active namespace (like intermediary, srg).
+     */
     @JvmOverloads
     fun loadMappings(target: String, autoDownload: Boolean = true) {
         loadMappings(detectNamespace(), Namespace.fromName(target), autoDownload)
