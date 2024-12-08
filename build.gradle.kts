@@ -1,4 +1,3 @@
-
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -13,8 +12,10 @@ val bytebuddy_version: String by project
 val classtransform_version: String by project
 val swc4j_version: String by project
 val mapping_io_version: String by project
-val strikt_version: String by project
 val semverVersion: String by project
+
+val strikt_version: String by project
+val junit_version: String by project
 
 val mod_id: String by project
 version = "${project.property("mod_version")}"
@@ -91,8 +92,8 @@ dependencies {
     implementation("net.lenni0451.classtransform:core:$classtransform_version")
 
     testImplementation(kotlin("test"))
-    testImplementation("org.junit.platform:junit-platform-launcher:1.11.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.11.1")
+    testImplementation("org.junit.platform:junit-platform-launcher:$junit_version")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:$junit_version")
     testImplementation("io.strikt:strikt-core:$strikt_version")
 }
 
