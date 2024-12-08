@@ -1,0 +1,29 @@
+tiny	2	0	intermediary	named
+c	io/github/etheradon/graalbridge/scripting/remapping/testclasses/EnumWithObfuscatedValues	io/github/etheradon/graalbridge/scripting/remapping/testclasses/EnumWithObfuscatedValues
+	f	Lio/github/etheradon/graalbridge/scripting/remapping/testclasses/EnumWithObfuscatedValues;	A	FIRST
+	f	Lio/github/etheradon/graalbridge/scripting/remapping/testclasses/EnumWithObfuscatedValues;	B	SECOND
+	f	Lio/github/etheradon/graalbridge/scripting/remapping/testclasses/EnumWithObfuscatedValues;	C	THIRD
+c	io/github/etheradon/graalbridge/scripting/remapping/testclasses/OuterObfuscated	io/github/etheradon/graalbridge/scripting/remapping/testclasses/Outer
+	f	Ljava/lang/String;	obfuscatedField	field
+	f	Ljava/lang/String;	staticObfuscatedField	staticField
+	m	()Ljava/lang/String;	obfuscatedMethod	method
+	m	()Ljava/lang/String;	staticObfuscatedMethod	staticMethod
+c	io/github/etheradon/graalbridge/scripting/remapping/testclasses/OuterObfuscated	testclasses/Outer
+c	io/github/etheradon/graalbridge/scripting/remapping/testclasses/OuterObfuscated$InnerObfuscated	io/github/etheradon/graalbridge/scripting/remapping/testclasses/Outer$Inner
+c	io/github/etheradon/graalbridge/scripting/remapping/testclasses/OuterObfuscated$StaticInnerObfuscated	io/github/etheradon/graalbridge/scripting/remapping/testclasses/Outer$StaticInner
+c	io/github/etheradon/graalbridge/scripting/remapping/testclasses/OuterObfuscated$StaticInnerObfuscated$StaticFurtherInnerObfuscated	io/github/etheradon/graalbridge/scripting/remapping/testclasses/Outer$StaticInner$StaticFurtherInner
+c	io/github/etheradon/graalbridge/scripting/remapping/testclasses/OuterObfuscated$StaticInnerObfuscated$StaticFurtherInnerObfuscated$StaticEvenFurtherInnerObfuscated	io/github/etheradon/graalbridge/scripting/remapping/testclasses/Outer$StaticInner$StaticFurtherInner$StaticEvenFurtherInner
+c	io/github/etheradon/graalbridge/scripting/remapping/testclasses/ObfuscatedInterface	io/github/etheradon/graalbridge/scripting/remapping/testclasses/Interface
+	m	()Ljava/lang/String;	obfuscatedInterfaceMethod	interfaceMethod
+c	io/github/etheradon/graalbridge/scripting/remapping/testclasses/BaseObfuscatedClass	io/github/etheradon/graalbridge/scripting/remapping/testclasses/BaseClass
+	f	Ljava/lang/String;	obfuscatedBaseField	baseField
+	m	()Ljava/lang/String;	obfuscatedBaseMethod	baseMethod
+c	io/github/etheradon/graalbridge/scripting/remapping/testclasses/DerivedObfuscatedClass	io/github/etheradon/graalbridge/scripting/remapping/testclasses/DerivedClass
+c	io/github/etheradon/graalbridge/scripting/remapping/testclasses/ObfuscatedMethods	io/github/etheradon/graalbridge/scripting/remapping/testclasses/Methods
+	m	(Ljava/lang/Object;)Ljava/lang/String;	obfuscatedConflict	conflict
+	m	(Ljava/lang/String;)Ljava/lang/String;	obfuscatedConflict	conflict
+	m	(Lio/github/etheradon/graalbridge/scripting/remapping/testclasses/OuterObfuscated$InnerObfuscated;Lio/github/etheradon/graalbridge/scripting/remapping/testclasses/OuterObfuscated$StaticInnerObfuscated;Ljava/lang/String;)Ljava/lang/String;	obfuscatedMethodSignature	methodSignature
+	m	(D)Ljava/lang/String;	obfuscatedOverloadedMethod	overloadedMethod
+	m	(I)Ljava/lang/String;	obfuscatedOverloadedMethod	overloadedMethod
+	m	(ID)Ljava/lang/String;	obfuscatedOverloadedMethod	overloadedMethod
+	m	(IF)Ljava/lang/String;	obfuscatedOverloadedMethod	overloadedMethod
