@@ -1,35 +1,35 @@
 {
-	"schemaVersion": 1,
-	"id": "${mod_id}",
-	"version": "${version}",
-	"name": "${mod_name}",
-	"description": "${mod_description}",
-	"authors": [
-		"${mod_author}"
-	],
-	"contact": {
-		"sources": "${mod_github}",
-		"issues": "${mod_github}/issues"
-	},
-	"license": "${mod_license}",
-	"icon": "assets/graalbridge/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			{
-				"value": "io.github.etheradon.graalbridge.GraalBridgeFabric",
-				"adapter": "kotlin"
-			}
-		]
-	},
-	"mixins": [
-		"graalbridge.mixins.json"
-	],
-	"depends": {
-		"fabricloader": ">=0.16.9",
-		"minecraft": "*",
-		"java": ">=8",
-		"fabric-language-kotlin": "*",
-		"jsmacros": "*"
-	}
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "${mod_author}"
+  ],
+  "contact": {
+    "sources": "${mod_github}",
+    "issues": "${mod_github}/issues"
+  },
+  "license": "${mod_license}",
+  "icon": "assets/graalbridge/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "value": "io.github.etheradon.graalbridge.GraalBridgeFabric",
+        "adapter": "kotlin"
+      }
+    ]
+  },
+  "mixins": [
+    "graalbridge.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.9",
+    "minecraft": "*",
+    "java": ">=8",
+    "fabric-language-kotlin": "*",
+    "jsmacros": "*"
+  }
 }

@@ -9,6 +9,7 @@ import io.github.etheradon.graalbridge.scripting.utils.mapping.MappingManager
 import io.github.etheradon.graalbridge.scripting.utils.mapping.Mappings
 import net.minecraft.client.main.Main
 import xyz.wagyourtail.jsmacros.client.JsMacros
+import xyz.wagyourtail.jsmacros.client.api.library.impl.FChat
 import xyz.wagyourtail.jsmacros.core.library.BaseLibrary
 import xyz.wagyourtail.jsmacros.core.library.Library
 
@@ -18,6 +19,7 @@ class FGraal : BaseLibrary() {
 
     companion object {
         private var mcVersion: String? = null
+        private val CHAT = FChat()
 
         init {
             val versionFile = Main::class.java.getResourceAsStream("/version.json");
@@ -102,6 +104,21 @@ class FGraal : BaseLibrary() {
     }
 
     /**
+     * Returns a list of versions that are available for the given mapping.
+     */
+    suspend fun getVersions(mapping: Mapping): List<String> {
+        return Mapping.getMappingProviderFor(mapping).getVersions()
+    }
+
+    /**
+     * Downloads the specific version of the given mapping and returns the content as a string.
+     * Returns a cached version if it was already downloaded.
+     */
+    suspend fun getMappings(mapping: Mapping, version: String): String? {
+        return Mapping.getMappingProviderFor(mapping).getMappings(version)?.readText()
+    }
+
+    /**
      * A shortcut for loading mappings from the specified namespace (like fabric, mojmap)
      * to the active namespace (like intermediary, srg).
      */
@@ -121,90 +138,26 @@ class FGraal : BaseLibrary() {
 
             val treeLoader = MappingTreeLoader(mappingLoader)
             val result = treeLoader.loadMappingTree(resolver, source, target)
-            handleMappingResult(result, source)
+            handleMappingResult(result, source, target)
 
         } ?: throw IllegalStateException("Minecraft version not set")
     }
 
-    /**
-     * Handles the result of loading the mapping tree.
-     */
-    private fun handleMappingResult(result: MappingTreeLoader.MappingResult, source: Namespace) {
+    private fun handleMappingResult(result: MappingTreeLoader.MappingResult, source: Namespace, target: Namespace) {
         when (result) {
             is MappingTreeLoader.MappingResult.Success -> {
-                println("Successfully loaded mappings")
+                CHAT.log("Successfully loaded mappings from ${source.name} to ${target.name}")
                 MappingManager.setMappingTree(MinecraftMappings(result.tree, source.name))
             }
 
             is MappingTreeLoader.MappingResult.SAME -> {
-                println("Source and target are already the same")
+                CHAT.log("Source and target are already the same")
             }
 
             is MappingTreeLoader.MappingResult.Failure -> {
-                println("Mapping failed: ${result.error}")
+                CHAT.log("Mapping failed: ${result.error}")
             }
         }
-    }
-
-}
-
-class MappingLoaderImpl(
-    private val autoDownload: Boolean,
-    private val mcVersion: String
-) : MappingLoader {
-
-    override fun load(mapping: Mapping): Reader {
-        val file = findMappingFile(mapping)
-        if (file != null) {
-            return file.reader()
-        }
-
-        if (autoDownload) {
-            downloadMapping(mapping)
-            return load(mapping)
-        }
-
-        throw IllegalStateException("No mappings found for version $mcVersion")
-    }
-
-    private fun findMappingFile(mapping: Mapping): File? {
-        return getMappingsFolder().listFiles()?.firstOrNull { it.nameWithoutExtension == mapping.name }
-    }
-
-    private fun downloadMapping(mapping: Mapping) {
-        val mappingProvider = getMappingProviderFor(mapping)
-
-        println("Downloading ${mapping.name} mappings for version $mcVersion")
-        return runBlocking {
-            val latestVersion = mappingProvider.getLatestVersion(mcVersion)
-                ?: throw IllegalStateException("No mappings found for version $mcVersion")
-            val reader = mappingProvider.getMappings(latestVersion)
-                ?: throw IllegalStateException("Failed to download ${mapping.name} mappings for version $mcVersion")
-            saveMappingToFile(mapping, reader)
-        }
-    }
-
-    private fun getMappingProviderFor(mapping: Mapping): MappingProvider<*> {
-        return when (mapping) {
-            Mapping.INTERMEDIARY -> IntermediaryMappingProvider
-            Mapping.YARN -> YarnMappingProvider
-            Mapping.MOJMAP -> MojangMappingProvider
-            Mapping.SRG -> SrgMappingProvider
-            Mapping.HASHED -> HashedMappingProvider
-            Mapping.QUILT -> QuiltMappingProvider
-            else -> throw IllegalArgumentException("No download provider for mapping ${mapping.name}")
-        }
-    }
-
-    private fun saveMappingToFile(mapping: Mapping, reader: Reader) {
-        val file = getMappingsFolder().resolve("${mapping.name}.txt")
-        file.writeText(reader.readText())
-    }
-
-    private fun getMappingsFolder(): File {
-        val mappingsFolder = JsMacros.core.config.configFolder.resolve("mappings/${mcVersion}")
-        mappingsFolder.mkdirs()
-        return mappingsFolder
     }
 
 }

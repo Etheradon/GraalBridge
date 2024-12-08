@@ -2,7 +2,7 @@ package io.github.etheradon.graalbridge.scripting.patches
 
 import io.github.etheradon.graalbridge.scripting.patches.stubs.HostFieldDesc
 import io.github.etheradon.graalbridge.scripting.patches.stubs.HostMethodDesc
-import io.github.etheradon.graalbridge.scripting.utils.GraalUtilities
+import io.github.etheradon.graalbridge.scripting.utils.ForwardingClassProvider
 import io.github.etheradon.graalbridge.scripting.utils.mapping.MappingManager
 import net.lenni0451.classtransform.InjectionCallback
 import net.lenni0451.classtransform.annotations.CLocalVariable
@@ -98,7 +98,7 @@ object StubTransformer {
 
         val classWriter = ClassWriter(ClassWriter.COMPUTE_FRAMES or ClassWriter.COMPUTE_MAXS)
         node.accept(classWriter)
-        GraalUtilities.classProvider.classToBytes[node.name] = classWriter.toByteArray()
+        ForwardingClassProvider.classToBytes[node.name] = classWriter.toByteArray()
     }
 
 }

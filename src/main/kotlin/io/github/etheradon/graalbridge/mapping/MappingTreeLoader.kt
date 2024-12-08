@@ -20,7 +20,7 @@ private class CommonNamespaceIterator(
             return targetEntry
         }
         val nextMapping = mappingPath[++index]
-        val commonNamespace = mergedNamespaces.intersect(nextMapping.containedTypes).firstOrNull()
+        val commonNamespace = mergedNamespaces.intersect(nextMapping.containedTypes.toSet()).firstOrNull()
             ?: throw NoSuchElementException("No common namespace found")
         mergedNamespaces += nextMapping.containedTypes
         return commonNamespace
@@ -39,7 +39,7 @@ class MappingTreeLoader(private val mappingLoader: MappingLoader) {
         return when {
             mappingPath == null -> MappingResult.Failure("No path found between $sourceEntry and $targetEntry")
             mappingPath.isEmpty() -> MappingResult.SAME
-            mappingPath.size == 1 -> loadSingleMapping(mappingPath.first(), targetEntry)
+            mappingPath.size == 1 -> loadSingleMapping(mappingPath[0], targetEntry)
             else -> loadMultipleMappings(mappingPath, targetEntry)
         }
     }
@@ -70,10 +70,9 @@ class MappingTreeLoader(private val mappingLoader: MappingLoader) {
 
         try {
             mappingPath.forEachIndexed { index, mapping ->
-                val result = loadSingleMapping(mapping, commonNamespace)
-                val currentTree = when (result) {
+                val currentTree = when (val result = loadSingleMapping(mapping, commonNamespace)) {
                     is MappingResult.Success -> result.tree
-                    else -> throw IllegalStateException("Failed to load mapping")
+                    else -> error("Failed to load mapping")
                 }
 
                 if (index == 0) {
@@ -97,7 +96,7 @@ class MappingTreeLoader(private val mappingLoader: MappingLoader) {
 
     sealed class MappingResult {
         data class Success(val tree: MemoryMappingTree) : MappingResult()
-        object SAME : MappingResult()
+        data object SAME : MappingResult()
         data class Failure(val error: String) : MappingResult()
     }
 

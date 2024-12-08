@@ -11,9 +11,8 @@ import java.lang.instrument.Instrumentation
 
 object GraalUtilities {
 
-    val classProvider = ForwardingClassProvider()
-    val transformerManager = TransformerManager(classProvider)
-    lateinit var inst: Instrumentation
+    private val transformerManager = TransformerManager(ForwardingClassProvider)
+    private lateinit var inst: Instrumentation
 
     var isMultiThreadedAccessAllowed: Boolean = false
 
@@ -50,14 +49,8 @@ object GraalUtilities {
 
 }
 
-object Agent {
-    @JvmStatic
-    fun agentmain(agentArgs: String?, inst: Instrumentation) {
-        GraalUtilities.inst = inst
-    }
-}
+object ForwardingClassProvider : BasicClassProvider() {
 
-class ForwardingClassProvider : BasicClassProvider() {
     val classToBytes = mutableMapOf<String, ByteArray>()
 
     override fun getClass(name: String): ByteArray {
@@ -69,7 +62,6 @@ class InstallationTransformer : IRawTransformer {
 
     override fun transform(transformerManager: TransformerManager, classNode: ClassNode): ClassNode {
         val isGraal23OrNewer = classNode.version >= 61
-        println("Graal 23 or newer: $isGraal23OrNewer")
 
         if (isGraal23OrNewer) {
             transformerManager.addTransformer(NpmModuleLoaderPatch::class.java.name)
@@ -78,4 +70,5 @@ class InstallationTransformer : IRawTransformer {
         }
         return classNode
     }
+
 }

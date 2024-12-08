@@ -1,5 +1,7 @@
 package io.github.etheradon.graalbridge.mapping
 
+import io.github.etheradon.graalbridge.mapping.providers.*
+
 sealed class Mapping(
     val name: String,
     val source: Namespace,
@@ -27,6 +29,19 @@ sealed class Mapping(
 
     companion object {
         val values = listOf(INTERMEDIARY, YARN, MOJMAP, SRG, HASHED, QUILT, NONE)
+
+        fun getMappingProviderFor(mapping: Mapping): MappingProvider<*> {
+            return when (mapping) {
+                INTERMEDIARY -> IntermediaryMappingProvider
+                YARN -> YarnMappingProvider
+                MOJMAP -> MojangMappingProvider
+                SRG -> SrgMappingProvider
+                HASHED -> HashedMappingProvider
+                QUILT -> QuiltMappingProvider
+                else -> throw IllegalArgumentException("No download provider for mapping ${mapping.name}")
+            }
+        }
+
     }
 
     override fun equals(other: Any?): Boolean {
