@@ -16,7 +16,7 @@ import xyz.wagyourtail.jsmacros.core.library.Library
 import java.io.File
 import java.io.Reader
 
-@Library("Graal")
+@Library("GraalBridge")
 @SuppressWarnings("unused")
 class FGraal : BaseLibrary() {
 
